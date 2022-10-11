@@ -1,22 +1,25 @@
-import java.util.Scanner;
+import java.io.*;
+import java.util.*;
 
 public class Main {
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
         while (true) {
-            String str = sc.next();
-            int age = sc.nextInt();
-            int weight = sc.nextInt();
-
-            if (str.equals("#") && age == 0 && weight ==0) {
+            String words = br.readLine();
+            if (words.equals("# 0 0")) {
                 break;
-            }
-
-            if (age > 17 || weight >= 80) {
-                System.out.println(str +" "+"Senior");
-            } else  {
-                System.out.println(str +" "+"Junior");
+            } else {
+                String[] check = words.split(" ");
+                if (Integer.valueOf(check[1]) > 17 || Integer.valueOf(check[2]) >= 80) {
+                    bw.write(String.valueOf(check[0]) + " Senior\n");
+                } else {
+                    bw.write(String.valueOf(check[0]) + " Junior\n");
+                }
             }
         }
+        br.close();
+        bw.flush();
+        bw.close();
     }
 }
