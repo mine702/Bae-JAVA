@@ -1,58 +1,61 @@
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.StringTokenizer;
 
-public class Main
-{
-	static int[] dx = {-1,1,0,0};
-	static int[] dy = {0,0,-1,1};
-	
-	static int[][] room;
-	static boolean[][] bl;
-	static StringBuilder sb = new StringBuilder();
-	static int N;
-	static int M;
-	public static void main(String args[])throws Exception{
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer st;
-		
-		st = new StringTokenizer(br.readLine());
-		
-		N = Integer.parseInt(st.nextToken());
-		M = Integer.parseInt(st.nextToken());
-		
-		room = new int[N][M];
-		bl = new boolean[N][M];
-		for(int i = 0; i < N; i++) {
-			String line = br.readLine();
-			for(int j = 0; j < M; j++) {
-				int num = Integer.parseInt(line.substring(j, j+1));
-				room[i][j] = num;
-			}
-		}
-		BFS(0,0);
-		sb.append(room[N-1][M-1]);
-		System.out.println(sb);
-	}
-	
-	public static void BFS(int x, int y) {
-		Queue<int[]> q1 = new LinkedList<>();
-		int[] start = {x, y};
-		q1.add( start );
-		bl[x][y] = true;
-		while(!q1.isEmpty()) {
-			int[] now = q1.poll();
-			for(int i = 0; i < 4; i++) {
-				int n1 = now[0] + dx[i];
-				int n2 = now[1] + dy[i];
-				if( n1 >= 0 && n2 >= 0 && n1 < N && n2 < M) {
-					if(bl[n1][n2] == false && room[n1][n2] != 0) {						
-						int[] go = {n1 , n2};
-						q1.add(go);
-						bl[n1][n2] = true;
-						room[n1][n2] += room[now[0]][now[1]];
-					}
-				}
-			}
-		}
-	}
+public class Main {
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+
+        int[] dI = {-1, 1, 0, 0}; // 상, 하, 좌, 우
+        int[] dJ = {0, 0, -1, 1};
+        int N = Integer.parseInt(st.nextToken());
+        int M = Integer.parseInt(st.nextToken());
+        int[][] map = new int[N + 2][M + 2];
+        int ans = Integer.MAX_VALUE;
+
+        for (int i = 1; i <= N; i++) {
+            char[] c = br.readLine().toCharArray();
+            for (int j = 1; j <= M; j++) {
+                map[i][j] = c[j - 1] - '0';
+            }
+        }
+
+        boolean[][] visited = new boolean[N + 2][M + 2]; // 방문 여부를 저장하는 배열
+        Queue<int[]> q = new LinkedList<int[]>();
+        int[] start = {1, 1, 1}; // 시작 좌표와 이동 거리
+        q.add(start);
+        visited[1][1] = true; // 시작 지점 방문 처리
+
+        while (!q.isEmpty()) {
+            int[] temp = q.poll();
+            int i = temp[0];
+            int j = temp[1];
+            int depth = temp[2];
+
+            if (i == N && j == M) {
+                ans = Math.min(depth, ans);
+                break;
+            }
+
+            for (int d = 0; d < 4; d++) {
+                int newI = i + dI[d];
+                int newJ = j + dJ[d];
+                if (map[newI][newJ] == 1 && !visited[newI][newJ]) {
+                    temp = new int[3];
+                    temp[0] = newI;
+                    temp[1] = newJ;
+                    temp[2] = depth + 1;
+                    visited[newI][newJ] = true;
+                    if (temp[2] >= ans) continue;
+                    q.add(temp);
+                }
+            }
+        }
+
+        System.out.println(ans);
+    }
 }
