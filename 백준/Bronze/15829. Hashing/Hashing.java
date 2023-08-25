@@ -1,4 +1,5 @@
 
+
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -11,12 +12,13 @@ public class Main {
 		int r = 31;
 		int M = 1234567891;
 		
-		int now = 0, ans = 0;
+		long now = 0, ans = 0;
 		for(int i = 0; i < input.length(); i++) {
 			now = input.charAt(i) - 'a' + 1;
-			ans += now * Math.pow(r, i) % M;
+			if(ans >= M) ans = ans % M;
+			ans += now * Math.pow(r, i);
 		}
 		
-		System.out.println(ans);
+		System.out.println(ans % M);
 	}
 }
