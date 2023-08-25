@@ -1,125 +1,105 @@
-import java.io.*;
-import java.util.*;
+import java.util.Scanner;
 
 public class Main {
-
-	// 그러면 일단 다 연결하고 조합으로 두개 정하고 되면 최솟값 구하면 되는거 아님?
-	// 연결이 안되면 -1 이고 무방향 그래프 만들어야 되네? 그럼 인접 행렬 아니면 인접 리스트 인데--
-	public static int N;
-	public static int[] people;
-	public static ArrayList<Integer>[] al;
-	public static int[] numbers;
-	public static int ans = Integer.MAX_VALUE;
-
-	@SuppressWarnings("unchecked")
-	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringBuilder sb = new StringBuilder();
-		StringTokenizer st;
-
-		N = Integer.parseInt(br.readLine());
-		people = new int[N + 1];
-		al = new ArrayList[N + 1];
-
-		for (int i = 1; i <= N; i++) {
-			al[i] = new ArrayList<>();
-		}
-
-		st = new StringTokenizer(br.readLine());
-
-		for (int i = 1; i <= N; i++) {
-			people[i] = Integer.parseInt(st.nextToken());
-		}
-
-		// 인접 리스트
-		for (int i = 1; i <= N; i++) {
-			st = new StringTokenizer(br.readLine());
-			int num = Integer.parseInt(st.nextToken());
-			for (int j = 0; j < num; j++) {
-				al[i].add(Integer.parseInt(st.nextToken()));
-			}
-		}
-
-		for (int i = 1; i <= N / 2; i++) {
-			numbers = new int[i];
-			Combinations(0, 1, i);
-		}
-		if (ans == Integer.MAX_VALUE)
-			sb.append(-1);
-		else
-			sb.append(ans);
-
-		System.out.println(sb);
-	}
-
-	private static void Combinations(int cnt, int start, int R) {
-		if (cnt == R) {
-			// 조합으로 나왔어 그럼 나온 값 저장하고 아닌 값 저장 하고 서로 연결 되어있는지 확인 하면 되잖아
-			int[] nums = new int[N - cnt];
-			int index1 = 0;
-			int index2 = 0;
-
-			// 아닌거 배열로 초기화 해주는거 만약 cnt 가 1이면 나머지 것들 배열에 넣기
-			for (int i = 1; i <= N; i++) {
-				if (index1 < cnt && numbers[index1] == i)
-					index1++;
-				else
-					nums[index2++] = i;
-			}
-			int num1 = 0;
-			if (numbers.length == 1)
-				num1 = people[numbers[0]];
-			else
-				num1 = BFS(numbers);
-			if (num1 != 0) {
-				int num2 = 0;
-				if (nums.length == 1)
-					num2 = people[nums[0]];
-				else
-					num2 = BFS(nums);
-
-				if (num2 != 0) {
-					ans = Math.min(ans, Math.abs(num1 - num2));
-				}
-			}
-
-			return;
-		}
-		for (int i = start; i <= N; i++) {
-			numbers[cnt] = i;
-			Combinations(cnt + 1, i + 1, R);
-		}
-	}
-
-	// number에 담겨있는 배열이 서로 인접한지 확인 하는 작업
-	private static int BFS(int[] number) {
-		int sum = 0;
-		boolean[] isCheck = new boolean[N + 1];
-		for (int i = 0; i < number.length; i++) {
-			isCheck[number[i]] = true;
-		}
-		Queue<Integer> queue = new ArrayDeque<>();
-		queue.add(number[0]);
-		isCheck[number[0]] = false;
-		while (true) {
-			if (queue.isEmpty())
-				break;
-			int num = queue.poll();
-			for (int i = 0; i < al[num].size(); i++) {
-				int indexNum = al[num].get(i);
-				if (!isCheck[indexNum])
-					continue;
-				queue.add(indexNum);
-				isCheck[indexNum] = false;
-			}
-		}
-		for (int i = 0; i < number.length; i++) {
-			if (!isCheck[number[i]])
-				sum += people[number[i]];
-			else {
-				return 0;
-			}
-		}
-		return sum;
-	}
+    
+    static int[] parents;
+    static int N;
+    static int[] people;
+    static int[][] map;
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        N = sc.nextInt();
+        parents = new int[N + 1];
+        isSeleceted = new boolean[N + 1];
+        people = new int[N + 1];
+        
+        for(int i = 1 ; i <= N ; i++) {
+            people[i] = sc.nextInt();
+        }
+        
+        map = new int[N + 1][N + 1];
+        for(int i = 1 ; i <= N; i++) {
+            int num = sc.nextInt();
+            for(int j = 0 ; j < num ; j++) {
+                // 현재 노드와 연결된 노드들 체크해주기
+                map[i][sc.nextInt()] = 1;
+            }
+        }
+        부분집합(0);
+        if(ans == MAX) System.out.println(-1);
+        else System.out.println(ans);
+    }
+    
+    static boolean[] isSeleceted;
+    static int MAX = 987654321;
+    static int ans = MAX;
+    static int[][] copyMap;
+    static boolean[] redBlue;
+    
+    static void 부분집합(int cnt) {
+        if(cnt == N) {
+            int cntRed = 0;
+            int cntBlue = 0;
+            int r = 0, b= 0;
+            redBlue = new boolean[N + 1];
+            
+            for(int i = 1 ; i <= N; i++) {
+                // 색 1 개수
+                if(isSeleceted[i]) {
+                    cntRed += people[i];
+                    // 빨강은 true, 파랑은 false로 저장
+                    redBlue[i] = true;
+                    // 어느 노드든 상관없으므로 그냥 마지막 빨강으로 체크된 노드를 채택
+                    r = i;
+                } 
+                // 색 2 개수
+                else {
+                    cntBlue+= people[i];
+                    redBlue[i] = false;
+                    b = i;
+                }
+            }
+            
+            // 각 색별로 가능한 방법인지 확인해주기
+            visited = new boolean[N + 1];
+            dfs(r);
+            dfs(b);
+            
+            // 가지치기..?
+            if(Math.abs(cntRed - cntBlue) > ans) return;
+            
+            for(int i = 1 ; i <= N; i++) {
+            	// 방문하지 못한곳, 즉 끊킨 부분이 있으면 -1후 종료
+            	if(!visited[i]) {
+            		// 하나도 되는 방법이 없을때만 답이 -1
+            		if(ans == MAX) ans = MAX;
+            		return;
+            	} 
+            }
+            
+            // 가능한 방법일 때       
+            ans = Math.min(ans, Math.abs(cntRed - cntBlue));
+            // 한 색이 하나도 없을때는 안됨
+            if((r == 0 || b == 0) && ans == MAX) {
+            	ans = MAX;
+            	return;
+            }
+            return;
+        }
+        isSeleceted[cnt] = true;
+        부분집합(cnt + 1);
+        isSeleceted[cnt] = false;
+        부분집합(cnt + 1);
+    }
+    
+    static boolean[] visited;
+    static void dfs(int start) {
+        
+        visited[start] = true;
+        for(int i = 1 ; i <= N; i++) {
+            if(map[start][i] == 1 && !visited[i] && (redBlue[start] == redBlue[i])) {
+            	dfs(i);
+            }
+        }
+    }
 }
