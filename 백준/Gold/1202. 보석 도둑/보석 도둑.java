@@ -3,13 +3,21 @@ import java.util.*;
 
 public class Main {
 
-	public static class Nodes {
+	public static class Nodes implements Comparable<Nodes>{
 		int size;
 		int price;
 
 		public Nodes(int size, int price) {
 			this.size = size;
 			this.price = price;
+		}
+		
+		@Override
+		public int compareTo(Nodes o) {
+			if (this.size == o.size) {
+				return this.price - o.price;
+			}
+			return this.size - o.size;
 		}
 	}
 
@@ -31,15 +39,7 @@ public class Main {
 			list.add(new Nodes(M, V));
 		}
 
-		Collections.sort(list, new Comparator<Nodes>() {
-			@Override
-			public int compare(Nodes o1, Nodes o2) {
-				if (o1.size == o2.size) {
-					return o2.price - o1.price;
-				}
-				return o1.size - o2.size;
-			}
-		});
+		Collections.sort(list);
 
 		for (int i = 0; i < K; i++) {
 			bag.add(Integer.parseInt(br.readLine()));
