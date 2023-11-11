@@ -3,7 +3,7 @@ import java.util.*;
 
 public class Main {
 
-	public static class Nodes implements Comparable<Nodes>{
+	public static class Nodes implements Comparable<Nodes> {
 		int size;
 		int price;
 
@@ -11,7 +11,7 @@ public class Main {
 			this.size = size;
 			this.price = price;
 		}
-		
+
 		@Override
 		public int compareTo(Nodes o) {
 			if (this.size == o.size) {
@@ -21,12 +21,15 @@ public class Main {
 		}
 	}
 
+	public static List<Nodes> list = new ArrayList<>();
+	public static List<Integer> bag = new ArrayList<>();
+	public static int start = 0;
+	public static long ans = 0;
+
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringBuilder sb = new StringBuilder();
 		StringTokenizer st;
-		List<Nodes> list = new ArrayList<>();
-		List<Integer> bag = new ArrayList<>();
 		st = new StringTokenizer(br.readLine());
 
 		int N = Integer.parseInt(st.nextToken());
@@ -48,10 +51,10 @@ public class Main {
 		Collections.sort(bag);
 
 		PriorityQueue<Integer> pq = new PriorityQueue<>(Comparator.reverseOrder());
-		long ans = 0;
-		for (int i = 0, j = 0; i < K; i++) {
-			while (j < N && list.get(j).size <= bag.get(i)) {
-				pq.offer(list.get(j++).price);
+
+		for (int i = 0; i < K; i++) {
+			while (start < N && list.get(start).size <= bag.get(i)) {
+				pq.offer(list.get(start++).price);
 			}
 			if (!pq.isEmpty()) {
 				ans += pq.poll();
