@@ -2,48 +2,54 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    static BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        int[] numbers = new int[Integer.parseInt(st.nextToken())];
-        int answer = Integer.parseInt(st.nextToken());
+    private static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    private static BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+    private static StringTokenizer st;
+
+    private static int m = 0;
+    private static int answer = 0;
+
+    public static void main(String[] args)throws IOException{
         st = new StringTokenizer(br.readLine());
-        for (int i = 0; i < numbers.length; i++) {
+
+        int n = Integer.parseInt(st.nextToken());
+        m = Integer.parseInt(st.nextToken());
+
+        int[] numbers = new int[n];
+        boolean[] visited = new boolean[n];
+
+        st = new StringTokenizer(br.readLine());
+
+        for(int i = 0 ; i < n; i++){
             numbers[i] = Integer.parseInt(st.nextToken());
         }
-        play(numbers, answer);
-        br.close();
+
+        combination(numbers, visited, 0, n, 3);
+
+        bw.write(String.valueOf(answer));
         bw.flush();
-        bw.close();
     }
 
-    public static void play(int[] numbers, int answer) throws IOException {
-        HashSet<Integer> hs = new HashSet<>();
-        for (int i = 0; i < numbers.length - 2; i++) {
-            for (int j = i + 1; j < numbers.length - 1; j++) {
-                for (int k = j + 1; k < numbers.length; k++) {
-                    hs.add(numbers[i] + numbers[j] + numbers[k]);
-                }
+    public static void combination(int[] arr, boolean[] visited, int start, int n, int r){
+        
+        if(r == 0){
+            int sum = 0;
+            for(int i = 0; i < n; i++){
+                if(visited[i])
+                    sum += arr[i];
             }
+            if(m >= sum && answer < sum)
+                answer = sum;
+
+            return;
         }
-        Integer[] arr = hs.toArray(new Integer[0]);
-        int[] sum = new int[arr.length];
-        int big = 0;
-        int t = 0;
-        for (int i = 0; i < arr.length; i++) {
-            if (arr[i] <= answer) {
-                sum[t++] = arr[i];
-            }
+
+        for(int i = start; i < n ; i++){
+            visited[i] = true;
+            combination(arr, visited, i + 1, n, r - 1);
+            visited[i] = false;
         }
-        for (int i = 0; i < sum.length; i++) {
-            if (i == 0) {
-                big = sum[i];
-            } else if (big < sum[i]) {
-                big = sum[i];
-            }
-        }
-        bw.write(String.valueOf(big));
+
     }
 }
