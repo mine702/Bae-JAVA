@@ -1,20 +1,22 @@
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.util.Arrays;
-import java.util.StringTokenizer;
-import java.io.IOException;
+import java.io.*;
+import java.util.*;
 
 public class Main {
-    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-    public static void main(String[] args) throws IOException {
-        int[] num = new int[Integer.parseInt(br.readLine())];
-        for (int i = 0; i < num.length; i++) {
-            num[i] = Integer.parseInt(br.readLine());
+    private static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    private static BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+    private static StringTokenizer st;
+
+    public static void main(String[] args)throws IOException{
+        int n = Integer.parseInt(br.readLine());
+        List<Integer> numbers = new LinkedList<>();
+        for(int i = 0 ; i < n; i++){
+            numbers.add( Integer.parseInt(br.readLine()));
         }
-        Arrays.sort(num);
-        for(int i : num){
-            System.out.println(i);
+        Collections.sort(numbers);
+        for(int i = 0 ; i < n; i++){
+            bw.write(numbers.get(i) + "\n");
         }
+        bw.flush();
     }
 }
