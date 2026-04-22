@@ -1,50 +1,54 @@
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class Main {
-    public static void main(String[] args) throws IOException{
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringBuilder sb = new StringBuilder();
-        StringTokenizer st = new StringTokenizer(br.readLine());
+
+    public static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    public static StringBuilder sb = new StringBuilder();
+    public static StringTokenizer st;
+
+    public static int[] nums;
+    public static boolean[] visited;
+    public static int[] output;
+
+    public static void main(String[] args) throws IOException {
+        st = new StringTokenizer(br.readLine());
 
         int N = Integer.parseInt(st.nextToken());
         int M = Integer.parseInt(st.nextToken());
 
-        int[] arr = new int[N];
-        int[] isCheck = new int[N];
+        nums = new int[N];
+        output = new int[M];
+        visited = new boolean[N];
+
         st = new StringTokenizer(br.readLine());
 
-        for(int i=0; i<N; i++){
-            arr[i] = Integer.parseInt(st.nextToken());
+        for (int i = 0; i < nums.length; i++) {
+            nums[i] = Integer.parseInt(st.nextToken());
         }
 
-        Arrays.sort(arr);
-
-        backtracking(arr, N, M, 0, 1, isCheck, sb);
-
-        System.out.print(sb);
+        Arrays.sort(nums);
+        per(0, N, M);
+        System.out.println(sb);
     }
 
-    public static void backtracking(int[] arr, int N, int M, int depth, int start, int[] isCheck, StringBuilder sb){
-        if(depth == M){
-            for(int i = 1 ; i <= M; i++){
-                for(int j = 0; j < N; j++){
-                    if(isCheck[j] == i) {
-                        sb.append(arr[j] + " ");
-                        break;
-                    }
-                }
-            }
+    public static void per(int depth, int n, int m) {
+        if (depth == m) {
+            for (int i = 0; i < output.length; i++)
+                sb.append(output[i] + " ");
+
             sb.append("\n");
             return;
         }
+        for (int i = 0; i < n; i++) {
+            if (visited[i])
+                continue;
 
-        for(int i=0; i<N; i++){
-            if(isCheck[i] != 0) continue;
-
-            isCheck[i] = start;
-            backtracking(arr, N, M, depth+1, start+1, isCheck, sb);
-            isCheck[i] = 0;
+            visited[i] = true;
+            output[depth] = nums[i];
+            per(depth + 1, n, m);
+            visited[i] = false;
         }
     }
+
 }
