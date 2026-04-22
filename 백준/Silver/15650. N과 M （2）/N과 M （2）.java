@@ -1,28 +1,41 @@
-import java.util.Scanner;
+import java.io.*;
+import java.util.*;
 
 public class Main {
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        int n = scanner.nextInt();
-        int m = scanner.nextInt();
-        scanner.close();
 
-        int[] combination = new int[m];
-        generateCombinations(n, m, 1, 0, combination);
+    public static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    public static StringBuilder sb = new StringBuilder();
+    public static StringTokenizer st;
+
+    public static boolean[] isCheck;
+    public static int[] save;
+
+    public static void main(String[] args) throws IOException {
+        st = new StringTokenizer(br.readLine());
+        int N = Integer.parseInt(st.nextToken());
+        int M = Integer.parseInt(st.nextToken());
+
+        isCheck = new boolean[N];
+        save = new int[M];
+        com(0, 0, N, M);
+        System.out.println(sb);
     }
 
-    public static void generateCombinations(int n, int m, int start, int depth, int[] combination) {
-        if (depth == m) {
-            for (int i = 0; i < m; i++) {
-                System.out.print(combination[i] + " ");
+    public static void com(int depth, int start, int N, int R) {
+        if (depth == R) {
+            for (int i = 0; i < save.length; i++) {
+                sb.append(save[i] + " ");
             }
-            System.out.println();
+            sb.append("\n");
             return;
         }
-
-        for (int i = start; i <= n; i++) {
-            combination[depth] = i;
-            generateCombinations(n, m, i + 1, depth + 1, combination);
+        for (int i = start; i < N; i++) {
+            if (isCheck[i])
+                continue;
+            save[depth] = i + 1;
+            isCheck[i] = true;
+            com(depth + 1, i, N, R);
+            isCheck[i] = false;
         }
     }
 }
