@@ -2,41 +2,53 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-        StringTokenizer st;
-        int n = Integer.parseInt(br.readLine());
-        XY[] numbers = new XY[n];
-        for (int i = 0; i < n; i++) {
-            st = new StringTokenizer(br.readLine());
-            numbers[i] = new XY(Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken()));
+
+    public static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    public static StringBuilder sb = new StringBuilder();
+    public static StringTokenizer st;
+
+    public static class Node implements Comparable<Node> {
+        int x;
+        int y;
+
+        public Node(int x, int y) {
+            this.x = x;
+            this.y = y;
         }
-        Arrays.sort(numbers, new Comparator<XY>() {
-            @Override
-            public int compare(XY o1, XY o2) {
-                if (o1.X == o2.X) {
-                    return o1.Y - o2.Y;
-                } else {
-                    return o1.X - o2.X;
-                }
+
+        @Override
+        public int compareTo(Node node) {
+            if (this.x < node.x)
+                return -1;
+            else if (this.x > node.x)
+                return 1;
+            else if (this.x == node.x) {
+                if (this.y < node.y)
+                    return -1;
+                else
+                    return 1;
             }
-        });
-        for (int i = 0; i < numbers.length; i++) {
-            bw.write(String.valueOf(numbers[i].X) + " " + String.valueOf(numbers[i].Y) + "\n");
+            return 0;
         }
-        br.close();
-        bw.flush();
-        bw.close();
     }
 
-    public static class XY {
-        int X;
-        int Y;
+    public static void main(String[] args) throws IOException {
+        int N = Integer.parseInt(br.readLine());
 
-        public XY(int X, int Y) {
-            this.X = X;
-            this.Y = Y;
+        TreeSet<Node> list = new TreeSet<>();
+
+        for (int i = 0; i < N; i++) {
+            st = new StringTokenizer(br.readLine());
+
+            int x = Integer.parseInt(st.nextToken());
+            int y = Integer.parseInt(st.nextToken());
+
+            list.add(new Node(x, y));
         }
+
+        for (Node node : list) {
+            sb.append(node.x + " " + node.y + "\n");
+        }
+        System.out.println(sb);
     }
 }
