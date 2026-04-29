@@ -1,9 +1,3 @@
-
-
-
-select count(*) AS COUNT
-from ECOLI_DATA
-where  
-LPAD(RIGHT( conv( GENOTYPE, 10, 2) ,3 ),3,0) = 101 OR 
-LPAD(RIGHT( conv( GENOTYPE, 10, 2) ,3 ),3,0) = 100 OR
-LPAD(RIGHT( conv( GENOTYPE, 10, 2) ,3 ),3,0) = 001;
+SELECT COUNT(*) AS COUNT
+FROM ECOLI_DATA 
+WHERE (GENOTYPE & 2 = 0) AND (GENOTYPE & 1 OR GENOTYPE & 4);
